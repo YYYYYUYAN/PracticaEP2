@@ -113,6 +113,7 @@ public class Objeto {
     /**
      * Imprime el objeto
      */
+    public String toString(){
         String id = String.format("%03d", id_objeto);
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         String fecha_i = formato.format(fecha_inicio);
