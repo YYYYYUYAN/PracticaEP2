@@ -42,7 +42,6 @@ public class SistemaPrestamoObjeto {
                 case 1:
                     if(altaUsuario(list_usuario)){
                         System.out.println("El proceso se ha hecho correctamente");
-                        list_usuario.get(list_usuario.size()-1).print();
                     }
                     else
                         System.out.println("El proceso fallado, Intenta de nuevo.");
@@ -53,7 +52,6 @@ public class SistemaPrestamoObjeto {
                     else{
                         if(altaObjeto(list_objeto, list_usuario)){
                             System.out.println("El proceso se ha hecho correctamente");
-                            list_objeto.get(list_objeto.size()-1).print();
                         }
                         else
                             System.out.println("El proceso fallado");
@@ -66,7 +64,6 @@ public class SistemaPrestamoObjeto {
                         
                         if(alquilarObjeto(list_prestamo, list_usuario, list_objeto)){
                             System.out.println("El proceso se ha hecho correctamente");
-                            list_prestamo.get(list_prestamo.size()-1).print();
                         }
                         else
                             System.out.println("El proceso fallado, Intenta de nuevo.");
@@ -179,7 +176,6 @@ public class SistemaPrestamoObjeto {
             flag_o = false; 
             flag_op6 = usuario.getPrestamo();
             if(opcion == 4 || flag_op6){
-                usuario.print();
                 System.out.println("\n\tOBJETOS DEL PROPIEDARIO " + usuario.getIdUsuario());
             }  
             while((it_o.hasNext()&&((opcion == 4 )|| flag_op6))) {
