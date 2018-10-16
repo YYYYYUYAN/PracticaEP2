@@ -32,27 +32,17 @@ public class SistemaPrestamoObjeto {
         ArrayList<Usuario> list_usuario = new ArrayList<>();
         ArrayList<Objeto> list_objeto = new ArrayList<>();
         ArrayList<Prestamo> list_prestamo = new ArrayList<>();
-        int id_usuario = 0, id_objeto = 0;
         int opcion = 100;
 
         while(opcion != 7){
-            System.out.println(" ---------\nMenu");
-            System.out.println(" 1- Alta Usuario ");
-            System.out.println(" 2- Alta Objeto ");
-            System.out.println(" 3- Alquiler de objeto ");
-            System.out.println(" 4- Lista todos los objetos ");
-            System.out.println(" 5- Baja de objeto ");
-            System.out.println(" 6- Mostrar saldos ");
-            System.out.println(" 7- Salir \n---------");
-            System.out.println(" \nIntroduce la opcion: ");
+            printMenu();
                         
             opcion = excepcionInput();
             switch(opcion){
                 case 1:
-                    if(altaUsuario(list_usuario, id_usuario)){
+                    if(altaUsuario(list_usuario)){
                         System.out.println("El proceso se ha hecho correctamente");
                         list_usuario.get(list_usuario.size()-1).print();
-                        id_usuario++;
                     }
                     else
                         System.out.println("El proceso fallado, Intenta de nuevo.");
@@ -61,10 +51,9 @@ public class SistemaPrestamoObjeto {
                     if(list_usuario.isEmpty())
                         System.out.println("No puede hacer operacion, porque no existe usuario");
                     else{
-                        if(altaObjeto(list_objeto, list_usuario, id_objeto)){
+                        if(altaObjeto(list_objeto, list_usuario)){
                             System.out.println("El proceso se ha hecho correctamente");
                             list_objeto.get(list_objeto.size()-1).print();
-                            id_objeto++;
                         }
                         else
                             System.out.println("El proceso fallado");
@@ -116,6 +105,19 @@ public class SistemaPrestamoObjeto {
             }  
         }
     }
+    
+    public static void printMenu(){
+        System.out.println(" ---------\nMenu");
+        System.out.println(" 1- Alta Usuario ");
+        System.out.println(" 2- Alta Objeto ");
+        System.out.println(" 3- Alquiler de objeto ");
+        System.out.println(" 4- Lista todos los objetos ");
+        System.out.println(" 5- Baja de objeto ");
+        System.out.println(" 6- Mostrar saldos ");
+        System.out.println(" 7- Salir \n---------");
+        System.out.println(" \nIntroduce la opcion: ");
+    }
+    
     
     /**
      * Baja objeto del lista cambiando su fecha de disponible a no disponible
