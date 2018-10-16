@@ -113,15 +113,15 @@ public class Objeto {
     /**
      * Imprime el objeto
      */
-    public void print(){
         String id = String.format("%03d", id_objeto);
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         String fecha_i = formato.format(fecha_inicio);
         String fecha_f = formato.format(fecha_final);
         //System.out.println("\tOBJETOS DEL PROPIEDARIO: "+id_propiedario);
-        System.out.println("\n\tCódigo de objeto: "+id+
+        String s = ("\n\tCódigo de objeto: "+id+
                 "\n\tDescripcion: "+ descripcion + "\n\tFecha de disponibilidad: " +
                 fecha_i + " - " + fecha_f + "\n\tCoste del préstamo por día: "+
                 coste + " euros");
+        return s;
     }
 }

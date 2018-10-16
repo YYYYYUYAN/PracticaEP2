@@ -22,8 +22,6 @@ public class Usuario {
      * @param nombre
      * @param email 
      */
-    public Usuario (int id, String nombre, String email){
-        this.id_usuario = id;
         this.nombre = nombre;
         this.email = email;     
         this.prestamo = false;
@@ -32,8 +30,6 @@ public class Usuario {
     /**
      * Imprime el usuario
      */ 
-    public void print(){
-        System.out.println("\nPROPIETARIO " + id_usuario + 
                 "\nNombre del propietario: " + nombre + 
                 " \nCorreo Electronico: " + email);
     }
