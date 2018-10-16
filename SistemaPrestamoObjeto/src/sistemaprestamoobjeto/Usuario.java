@@ -12,7 +12,7 @@ package sistemaprestamoobjeto;
  */
 public class Usuario {
     private String nombre;
-    private int id_usuario;
+    private static int id_usuario;
     private String email;
     private boolean prestamo;
 
