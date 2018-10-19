@@ -20,8 +20,6 @@ import java.util.Scanner;
  */
 public class SistemaPrestamoObjeto {
     
-    //1/9/2008 FECHA DEFECTO DE NO VALIDO
-    static final Date FECHA_NO_VAL = new Date(1220227200L * 1000);
     //Formato de correo 
     static final int MAX_INTENTO = 3;
     static final int MISMAFECHAMENOR = 0;
@@ -86,15 +84,11 @@ public class SistemaPrestamoObjeto {
                     }
                     break;
                 case 5:
-                    if(list_objeto.isEmpty())
-                        System.out.println("No puede hacer operacion, porque no existe objeto");
-                    else
-                    {
                         if(bajaObjeto(list_objeto))
                             System.out.println("El proceso se ha hecho correctamente");
                         else
                             System.out.println("Error: No existe el objeto disponible");
-                    }
+                    
                     break;
                 case 6: 
                     if(list_usuario.isEmpty())
@@ -120,6 +114,12 @@ public class SistemaPrestamoObjeto {
                     else
                         System.out.println("El proceso fallado, Intenta de nuevo.");
                     break;
+                case 10:
+                    if(eliminarUsuario(list_usuario, list_objeto, list_prestamo))
+                       System.out.println("El proceso se ha hecho correctamente");
+                    else
+                        System.out.println("El proceso fallado, Intenta de nuevo.");
+                    break;
                 default:
                     System.out.println("!!La opción no es valida.!!Deber ser numero entero entre 1 y 7");
             }  
@@ -129,7 +129,8 @@ public class SistemaPrestamoObjeto {
     public static boolean modificarImporte(ArrayList<Objeto> list_objeto)
     {
         int opcion, pos;
-        if(printListaObjetosDisponible(list_objeto)){
+        if(!list_objeto.isEmpty()){
+            System.out.println(list_objeto.toString());
             System.out.println("Introduce identificador de objeto: ");
             opcion = ComprobarDatos.excepcionInput();
             pos = buscarObjeto(list_objeto, opcion);     
@@ -162,14 +163,80 @@ public class SistemaPrestamoObjeto {
         System.out.println(" 6- Mostrar saldos ");
         System.out.println(" 8- Modificar el importe ");
         System.out.println(" 9- Guardar saldos en fichero");
+        System.out.println(" 10- Eliminar Usuario");
         System.out.println(" 7- Salir \n---------");
         System.out.println(" \nIntroduce la opcion: ");
     }
     
+    public static boolean eliminarUsuario(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p){
+        int id_propiedario;
+        int pos, id_ob;
+        boolean error = false;
+        int i, j;
+        Objeto o;
+        Prestamo p;
+        ArrayList<Integer> ids = new ArrayList<>();
+        ArrayList<Prestamo> ps = new ArrayList<>();
+        
+        if(!list_u.isEmpty()){
+            System.out.println(list_u.toString());
+            System.out.println("Elige el numero de usuario: ");
+            id_propiedario = ComprobarDatos.excepcionInput();
+            pos = buscarUsuario(list_u, id_propiedario);
+            if(pos != -1){
+                int id_u =list_u.get(pos).getIdUsuario();
+                if(list_u.get(pos).getPrestamo()){
+                    for(i = 0; i < list_o.size(); i++)
+                    {
+                        if(list_o.get(i).getIdPropiedario() == id_u){
+                            id_ob = list_o.get(i).getIdObjeto();
+                            ids.add(id_ob);
+                            
+                            for(j = 0; j < list_p.size(); j++){
+                                if(list_p.get(j).getIdObjeto() == id_ob)
+                                    ps.add(list_p.get(j));
+                            }
+                        }
+                    }
+                    
+                    for(i = 0; i < ps.size(); i++){
+                        list_p.remove(ps.get(i));
+                    }
+                }
+                else
+                {
+                    for(i = 0; i < list_o.size(); i++)
+                    {
+                        if(list_o.get(i).getIdPropiedario() == id_u){
+                            id_ob = list_o.get(i).getIdObjeto();
+                            ids.add(id_ob);
+                        }
+                    }
+                }
+                
+                for(i = 0; i < ids.size(); i++){
+                    bajaObjetoAux(list_o, ids.get(i));
+                }
+                
+                
+                list_u.remove(pos);
+                ps.clear();
+                ids.clear();
+                return true;
+            }
+            else
+                System.out.println("No encuentra usuario");
+        }
+        else
+            System.out.println("Lista de usuario es vacio");
+        
+        return false;
+    }
+    
     
     public static boolean generarFicheroPrestamo(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p){
-         String s = listarObjetos(list_u, list_o, list_p, 6);
-         return generarFichero(s);
+        String s = listarObjetos(list_u, list_o, list_p, 6);
+        return generarFichero(s);
     }
 
     public static boolean generarFichero(String s){
@@ -191,17 +258,21 @@ public class SistemaPrestamoObjeto {
      */
     public static boolean bajaObjeto(ArrayList<Objeto> list_objeto){
         int opcion, pos;
-        
-        if(printListaObjetosDisponible(list_objeto)){
+        if(!list_objeto.isEmpty()){
+            System.out.println(list_objeto);
             System.out.println("Introduce identificador de objeto: ");
             opcion = ComprobarDatos.excepcionInput();
-            pos = buscarObjeto(list_objeto, opcion);     
-            if(pos != -1){ 
-                list_objeto.get(pos).setFechaFinal(FECHA_NO_VAL);
-                return true;
-            }
+            return bajaObjetoAux(list_objeto, opcion);
         }
-        
+        return false;
+    }
+    
+    public static boolean bajaObjetoAux(ArrayList<Objeto> list_objeto, int opcion){
+        int pos = buscarObjeto(list_objeto, opcion);     
+        if(pos != -1){ 
+            list_objeto.remove(pos);
+            return true;
+        }
         return false;
     }
     
@@ -395,7 +466,7 @@ public class SistemaPrestamoObjeto {
         Scanner leer = new Scanner(System.in);
         int pos;
         
-        printListaUsuarios(list_u);
+        System.out.println(list_u.toString());
         System.out.println("Elige el numero de usuario: ");
         id_propiedario = ComprobarDatos.excepcionInput();
         pos = buscarUsuario(list_u, id_propiedario);
@@ -441,7 +512,7 @@ public class SistemaPrestamoObjeto {
        
 
         Scanner leer = new Scanner(System.in);
-        printListaUsuarios(list_u);
+        System.out.println(list_u.toString());
         int pos_u, pos_o;
         
         System.out.println("Elige el numero de usuario: ");
@@ -449,7 +520,8 @@ public class SistemaPrestamoObjeto {
         pos_u = buscarUsuario(list_u, id_u);
         if(pos_u!= -1){
             String nombre = list_u.get(pos_u).getNombre();
-            if(printListaObjetosDisponible(list_o)){
+            if(!list_o.isEmpty()){
+                System.out.println(list_o.toString());
                 System.out.println("Elige el numero de objeto: ");
                 int id_o = ComprobarDatos.excepcionInput();
                 pos_o = buscarObjeto(list_o, id_o);
@@ -486,42 +558,6 @@ public class SistemaPrestamoObjeto {
         else
             System.out.println("No existe el usuario con este id.");
         return false;
-    }
-    
-    
-    /**
-     * Imprime en pantalla los objetos disponibles
-     * @param lista lista de todos objetos
-     * @return si existe objeto en lista disponible
-     */
-    public static boolean printListaObjetosDisponible(ArrayList<Objeto> lista){
-        Iterator<Objeto> iterator = lista.iterator();
-        Objeto o;
-        Date actual = new Date();
-        boolean existe = false;
-	while (iterator.hasNext())
-        {   
-            o = iterator.next();
-            if(o.getFechaFinal().after(actual)){
-                System.out.println(o.toString());
-                existe = true;
-            }
-        }
-        System.out.println("\n");
-        
-        return existe;
-    }
-    
-    
-    /**
-     * Imprime en pantalla todos usuarios 
-     * @param lista lista de usuarios
-     */
-    public static void printListaUsuarios(ArrayList<Usuario> lista){
-        Iterator<Usuario> iterator = lista.iterator();
-        while (iterator.hasNext()) 
-            System.out.println(iterator.next().toString());
-        System.out.println("\n");
     }
 
     
