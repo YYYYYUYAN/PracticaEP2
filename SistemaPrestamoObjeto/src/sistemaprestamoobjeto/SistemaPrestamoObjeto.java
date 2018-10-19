@@ -101,10 +101,42 @@ public class SistemaPrestamoObjeto {
                 case 7: 
                     System.out.println("Salir ");
                     break;
+                case 8: 
+                    if(modificarImporte(list_objeto))
+                        System.out.println("El proceso se ha hecho correctamente");
+                    else
+                        System.out.println("El proceso fallado, Intenta de nuevo.");
+                    break;
                 default:
                     System.out.println("!!La opción no es valida.!!Deber ser numero entero entre 1 y 7");
             }  
         }
+    }
+    
+    public static boolean modificarImporte(ArrayList<Objeto> list_objeto)
+    {
+        int opcion, pos;
+        if(printListaObjetosDisponible(list_objeto)){
+            System.out.println("Introduce identificador de objeto: ");
+            opcion = ComprobarDatos.excepcionInput();
+            pos = buscarObjeto(list_objeto, opcion);     
+            if(pos != -1){ 
+                String s1 = "Introduce el nuevo coste del objeto: ";
+                float coste = getCosteTeclado(s1);
+                if(coste >= 0){
+                    list_objeto.get(pos).setCoste(coste);
+                    return true;
+                }
+                else
+                    System.out.println("El coste debe ser mayor que 0");
+            }
+            else
+                System.out.println("No existe objeto en la lista de objetos");
+        }
+        else
+            System.out.println("No existe objeto disponible");
+        
+        return false;       
     }
     
     public static void printMenu(){
@@ -115,6 +147,7 @@ public class SistemaPrestamoObjeto {
         System.out.println(" 4- Lista todos los objetos ");
         System.out.println(" 5- Baja de objeto ");
         System.out.println(" 6- Mostrar saldos ");
+        System.out.println(" 8- Modificar el importe ");
         System.out.println(" 7- Salir \n---------");
         System.out.println(" \nIntroduce la opcion: ");
     }
