@@ -9,11 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -23,7 +20,10 @@ public class SistemaPrestamoObjeto {
     
     //1/9/2008 FECHA DEFECTO DE NO VALIDO
     static final Date FECHA_NO_VAL = new Date(1220227200L * 1000);
-   
+    //Formato de correo 
+    static final int MAX_INTENTO = 3;
+    static final String NOMBRE = "^[a-zA-Z]([a-zA-z|\\s])*$";
+    static final String CORREO = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
     /**
      * @param args the command line arguments
      */
@@ -36,8 +36,7 @@ public class SistemaPrestamoObjeto {
 
         while(opcion != 7){
             printMenu();
-                        
-            opcion = excepcionInput();
+            opcion = ComprobarDatos.excepcionInput();
             switch(opcion){
                 case 1:
                     if(altaUsuario(list_usuario)){
@@ -129,7 +128,7 @@ public class SistemaPrestamoObjeto {
         
         if(printListaObjetosDisponible(list_objeto)){
             System.out.println("Introduce identificador de objeto: ");
-            opcion = excepcionInput();
+            opcion = ComprobarDatos.excepcionInput();
             pos = buscarObjeto(list_objeto, opcion);     
             if(pos != -1){ 
                 list_objeto.get(pos).setFechaFinal(FECHA_NO_VAL);
@@ -140,22 +139,6 @@ public class SistemaPrestamoObjeto {
         return false;
     }
     
-    /**
-     * Devuelve opcion de menu con excepcion controlada de tipo de variable de entrada
-     * @return opcion
-     */
-    public static int excepcionInput(){
-        Scanner leer = new Scanner(System.in);
-        int opcion;
-        opcion = -1;
-        try{
-            opcion = leer.nextInt();
-        }catch(InputMismatchException e){
-            System.out.println("Excepcion: " + e);
-        }
-     
-        return opcion;
-    }
 
     /**
      * Mostrar saldo o todos los objetos según opcion 6 o opcion 4
@@ -187,7 +170,7 @@ public class SistemaPrestamoObjeto {
                 flag_p = false;
                 if(usuario.getIdUsuario() == objeto.getIdPropiedario()){
                     if(opcion == 4)
-                        objeto.print();
+                        System.out.println(objeto.toString());
                     System.out.println("\n\t\tPRESTAMOS DEL OBJETO " + objeto.getIdObjeto());
                     flag_o = true;
                     while(it_p.hasNext()){
@@ -196,7 +179,7 @@ public class SistemaPrestamoObjeto {
                             flag_p = true;
                             if(opcion == 6)
                                 importe += prestamo.getStartup();
-                            prestamo.print();
+                            System.out.println(prestamo.toString());
                         }  
                     }
                     if(!flag_p)
@@ -208,7 +191,6 @@ public class SistemaPrestamoObjeto {
             if(!flag_o && (flag_op6 || (opcion == 4)))
                 System.out.println("\n\tEl propietario " + usuario.getIdUsuario()+ " no tiene objetos asociados.");
             
-            
             if(flag_op6 && opcion == 6){
                 System.out.println("\nImporte total acumulado para la startup: " + importe + " euros");
                 importe = 0;
@@ -218,52 +200,54 @@ public class SistemaPrestamoObjeto {
         }  
     }
    
+    public static String getNombreOCorreo(String preg, String formato)
+    {
+        Scanner leer = new Scanner(System.in);
+        String res = "";
+        int i = 0;
+        boolean flag = false;
+        do{
+            System.out.println(preg);
+            res = leer.nextLine();
+            if(!ComprobarDatos.comprobarFormato(res, formato))
+                System.out.println("Formato incorrecto ");  
+            else
+                flag = true;
+           i++;
+        }while(!flag && i < MAX_INTENTO);
+        
+        return res;    
+    }
     /**
      * Alta usuario
      * @param list_u lista de usuarios
-     * @param id id de usuario
      * @return 
      */
-    public static boolean altaUsuario(ArrayList<Usuario> list_u, int id){
+    public static boolean altaUsuario(ArrayList<Usuario> list_u){
         String nombre, email;
-        Pattern p;
-        Matcher m;
-        Scanner leer = new Scanner(System.in);
-        
-        System.out.println("Introduce el nombre completo de usuario: ");
-        nombre = leer.nextLine();
-        System.out.println("Introduce el correo electronico de usuario: ");
-        email = leer.nextLine();
-        
+        String s1 = "Introduce el nombre del usuario: ";
+        String s2 = "Introduce el correo del usuario: ";
+        nombre = getNombreOCorreo(s1, NOMBRE);
+        if(nombre.equals(""))
+            return false;
+        email = getNombreOCorreo(s2, CORREO);
+        if(email.equals(""))
+            return false;
         //debe tener por minimo una letra
-        String formato_nombre = "^[a-zA-Z]([a-zA-z|\\s])*$";
-        p = Pattern.compile(formato_nombre);
-        m = p.matcher(nombre);
-        if(m.matches()){
-            String formato_correo = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-            p = Pattern.compile(formato_correo);
-            m = p.matcher(email);
-            if(m.matches()){
-                Usuario u = new Usuario(id, nombre, email);
-                list_u.add(u);
-                return true;
-            }
-            System.out.println("El formato de correo incorrecto");
-        }
-        else
-            System.out.println("El formato de nombre incorrecto, solo puede ser letras");
-        
-        return false;
+        Usuario u = new Usuario(nombre, email);
+        list_u.add(u);
+        return true;
     }
     
+    
+   
     /**
      * Crea un objeto para un usuario ya está creado
      * @param list_o lista de objetos
      * @param list_u lista de usuarios
-     * @param id id de objeto
      * @return objeto
      */
-    public static boolean altaObjeto(ArrayList<Objeto> list_o, ArrayList<Usuario> list_u, int id){
+    public static boolean altaObjeto(ArrayList<Objeto> list_o, ArrayList<Usuario> list_u){
         String descripcion, fecha_inicio, fecha_final;
         int id_propiedario;
         Scanner leer = new Scanner(System.in);
@@ -272,11 +256,12 @@ public class SistemaPrestamoObjeto {
         
         printListaUsuarios(list_u);
         System.out.println("Elige el numero de usuario: ");
-        id_propiedario = excepcionInput();
+        id_propiedario = ComprobarDatos.excepcionInput();
         pos = buscarUsuario(list_u, id_propiedario);
         if(pos != -1){
             System.out.println("Introduce la descripcion del objeto: ");
             descripcion = leer.nextLine();
+            
             System.out.println("Introduce la fecha de inicio del disponibilidad del objeto (dd/mm/aaaa): ");
             fecha_inicio = leer.nextLine();
             System.out.println("Introduce la fecha de fin del disponibilidad del objeto (dd/mm/aaaa):  ");
@@ -293,7 +278,7 @@ public class SistemaPrestamoObjeto {
                     Date f_f = toDate(fecha_final);
                     Date actual = new Date();
                     if(((coste > 0 && f_f.after(f_i)) && (f_i.after(actual)||isSameDay(fecha_inicio, actual)))){
-                        Objeto o = new Objeto(id, descripcion, f_i, f_f, coste, id_propiedario);
+                        Objeto o = new Objeto(descripcion, f_i, f_f, coste, id_propiedario);
                         list_o.add(o);
                         return true;
                     }
@@ -415,7 +400,7 @@ public class SistemaPrestamoObjeto {
         {   
             o = iterator.next();
             if(o.getFechaFinal().after(actual)){
-                o.print();
+                System.out.println(o.toString());
                 existe = true;
             }
         }
@@ -432,7 +417,7 @@ public class SistemaPrestamoObjeto {
     public static void printListaUsuarios(ArrayList<Usuario> lista){
         Iterator<Usuario> iterator = lista.iterator();
         while (iterator.hasNext()) 
-            iterator.next().print();
+            System.out.println(iterator.next().toString());
         System.out.println("\n");
     }
 

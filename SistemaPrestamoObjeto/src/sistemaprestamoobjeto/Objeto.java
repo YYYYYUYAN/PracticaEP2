@@ -13,7 +13,7 @@ import java.util.Date;
  * @author YUYAN
  */
 public class Objeto {
-    private final int id_objeto;
+    private static int id_objeto;
     private final int id_propiedario;
     private String descripcion;
     private Date fecha_inicio;
@@ -21,20 +21,19 @@ public class Objeto {
     private float coste;
     
     /**
-     * Constructor
-     * @param id_objeto 
+     * Constructor 
      * @param descripcion
      * @param fecha_inicio
      * @param fecha_final
      * @param coste
      * @param id_propiedario 
      */
-    public Objeto(int id_objeto,String descripcion, Date fecha_inicio, Date fecha_final, float coste, int id_propiedario){
+    public Objeto(String descripcion, Date fecha_inicio, Date fecha_final, float coste, int id_propiedario){
         this.descripcion = descripcion;
         this.fecha_inicio = fecha_inicio;
         this.fecha_final = fecha_final;
         this.coste = coste;
-        this.id_objeto = id_objeto;   
+        id_objeto = id_objeto + 1;   
         this.id_propiedario = id_propiedario;
     }
     
@@ -112,7 +111,9 @@ public class Objeto {
     
     /**
      * Imprime el objeto
+     * @return 
      */
+    @Override
     public String toString(){
         String id = String.format("%03d", id_objeto);
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");

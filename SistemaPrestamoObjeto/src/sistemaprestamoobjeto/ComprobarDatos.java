@@ -6,8 +6,11 @@
 
 package sistemaprestamoobjeto;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -29,32 +32,29 @@ public class ComprobarDatos {
         }catch(InputMismatchException e){
             System.out.println("Excepcion: " + e);
         }
-     
         return opcion;
     }
-    public static String Nombre(){
+    
+    
+    public static boolean comprobarFormato(String nombre, String formato){
     //debe tener por minimo una letra
-        String formato_nombre = "^[a-zA-Z]([a-zA-z|\\s])*$";
-        p = Pattern.compile(formato_nombre);
+        Pattern p;
+        Matcher m;
+        p = Pattern.compile(formato);
         m = p.matcher(nombre);
+        return m.matches();
     }
     
-    public static String Nombre(){
-        if(m.matches()){
-            String formato_correo = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-            p = Pattern.compile(formato_correo);
-            m = p.matcher(email);
-            if(m.matches()){
-                Usuario u = new Usuario(id, nombre, email);
-                list_u.add(u);
-                return true;
-            }
-            System.out.println("El formato de correo incorrecto");
-        }
-        else
-            System.out.println("El formato de nombre incorrecto, solo puede ser letras");
-        
-        return false;
+    public static boolean comprobarFecha(Date f1, Date f2){
+
+        return (isSameDay(f1, f2) || f2.after(f1));
     }
     
+
+    public static boolean isSameDay(Date f1, Date f2){
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        String fecha2 = formato.format(f2);
+        String fecha1 = formato.format(f1);
+        return fecha2.equals(fecha1);
+    }
 }
