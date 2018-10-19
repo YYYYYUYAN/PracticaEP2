@@ -122,7 +122,7 @@ public class Objeto {
         String fecha_i = formato.format(fecha_inicio);
         String fecha_f = formato.format(fecha_final);
         //System.out.println("\tOBJETOS DEL PROPIEDARIO: "+id_propiedario);
-        String s = ("\n\tCódigo de objeto: "+id+
+        String s = ("\n\n\tCódigo de objeto: "+id+
                 "\n\tDescripcion: "+ descripcion + "\n\tFecha de disponibilidad: " +
                 fecha_i + " - " + fecha_f + "\n\tCoste del préstamo por día: "+
                 coste + " euros");

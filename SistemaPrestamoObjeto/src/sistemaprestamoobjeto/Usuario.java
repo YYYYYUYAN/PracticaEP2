@@ -36,7 +36,7 @@ public class Usuario {
      */ 
     @Override
     public String toString(){
-        String s = ("\nPROPIETARIO " + getIdUsuario() + 
+        String s = ("\n\nPROPIETARIO " + getIdUsuario() + 
                 "\nNombre del propietario: " + nombre + 
                 " \nCorreo Electronico: " + email);
         return s;

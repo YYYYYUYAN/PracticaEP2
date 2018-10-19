@@ -5,6 +5,10 @@
  */
 package sistemaprestamoobjeto;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -35,7 +39,7 @@ public class SistemaPrestamoObjeto {
         ArrayList<Objeto> list_objeto = new ArrayList<>();
         ArrayList<Prestamo> list_prestamo = new ArrayList<>();
         int opcion = 100;
-
+        String s;
         while(opcion != 7){
             printMenu();
             opcion = ComprobarDatos.excepcionInput();
@@ -76,8 +80,10 @@ public class SistemaPrestamoObjeto {
                 case 4:
                     if(list_usuario.isEmpty())
                         System.out.println("No existe lista");
-                    else
-                        listarObjetos(list_usuario, list_objeto,list_prestamo, opcion);
+                    else{
+                        s = listarObjetos(list_usuario, list_objeto,list_prestamo, opcion);
+                        System.out.println(s);
+                    }
                     break;
                 case 5:
                     if(list_objeto.isEmpty())
@@ -94,7 +100,8 @@ public class SistemaPrestamoObjeto {
                     if(list_usuario.isEmpty())
                         System.out.println("No existe lista");
                     else{
-                        listarObjetos(list_usuario, list_objeto,list_prestamo, opcion);
+                        s = listarObjetos(list_usuario, list_objeto,list_prestamo, opcion);
+                        System.out.println(s);
                         System.out.println("(Si no imprime nada en pantalla, es decir que no existe prestamo)");
                     }
                     break;
@@ -103,6 +110,12 @@ public class SistemaPrestamoObjeto {
                     break;
                 case 8: 
                     if(modificarImporte(list_objeto))
+                        System.out.println("El proceso se ha hecho correctamente");
+                    else
+                        System.out.println("El proceso fallado, Intenta de nuevo.");
+                    break;
+                case 9: 
+                    if(generarFicheroPrestamo(list_usuario, list_objeto, list_prestamo))
                         System.out.println("El proceso se ha hecho correctamente");
                     else
                         System.out.println("El proceso fallado, Intenta de nuevo.");
@@ -148,11 +161,29 @@ public class SistemaPrestamoObjeto {
         System.out.println(" 5- Baja de objeto ");
         System.out.println(" 6- Mostrar saldos ");
         System.out.println(" 8- Modificar el importe ");
+        System.out.println(" 9- Guardar saldos en fichero");
         System.out.println(" 7- Salir \n---------");
         System.out.println(" \nIntroduce la opcion: ");
     }
     
     
+    public static boolean generarFicheroPrestamo(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p){
+         String s = listarObjetos(list_u, list_o, list_p, 6);
+         return generarFichero(s);
+    }
+
+    public static boolean generarFichero(String s){
+        try{
+            BufferedWriter salida = new BufferedWriter(new FileWriter(new File("src/saldo.txt")));
+            salida.write(s);
+            salida.flush();
+            salida.close();
+            return true;
+        } catch(IOException e) {
+            System.out.println("Excepcion: " + e);
+        }   
+        return false;
+    }
     /**
      * Baja objeto del lista cambiando su fecha de disponible a no disponible
      * @param list_objeto
@@ -181,8 +212,9 @@ public class SistemaPrestamoObjeto {
      * @param list_o lista de objetos
      * @param list_p lista de prestamos
      * @param opcion opcion 4 o opcion 6
+     * @return 
      */
-    public static void listarObjetos(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p, int opcion){
+    public static String listarObjetos(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p, int opcion){
         Iterator<Usuario> it_u = list_u.iterator();
         Iterator<Objeto> it_o = list_o.iterator();
         Iterator<Prestamo> it_p = list_p.iterator();
@@ -191,22 +223,33 @@ public class SistemaPrestamoObjeto {
         Objeto objeto;
         Prestamo prestamo;
         float importe = 0;
-        
+        String text = "";
+        String text4 = "";
         while (it_u.hasNext()) {
             usuario = it_u.next();
             flag_o = false; 
             flag_op6 = usuario.getPrestamo();
             if(opcion == 4 || flag_op6){
-                System.out.println(usuario.toString());
-                System.out.println("\n\tOBJETOS DEL PROPIEDARIO " + usuario.getIdUsuario());
+                
+                text += usuario.toString();
+                text += "\n\n\tOBJETOS DEL PROPIEDARIO " + usuario.getIdUsuario();
+                text4 += usuario.toString();
+                text4 += "\n\n\tOBJETOS DEL PROPIEDARIO " + usuario.getIdUsuario();
+                
+               // System.out.println(usuario.toString());
+               // System.out.println("\n\tOBJETOS DEL PROPIEDARIO " + usuario.getIdUsuario());
             }  
             while((it_o.hasNext()&&((opcion == 4 )|| flag_op6))) {
                 objeto = it_o.next();
                 flag_p = false;
                 if(usuario.getIdUsuario() == objeto.getIdPropiedario()){
                     if(opcion == 4)
-                        System.out.println(objeto.toString());
-                    System.out.println("\n\t\tPRESTAMOS DEL OBJETO " + objeto.getIdObjeto());
+                        text4 += objeto.toString();
+                       // System.out.println(objeto.toString());
+                    
+                    text += "\n\n\t\tPRESTAMOS DEL OBJETO " + objeto.getIdObjeto();
+                    text4 += "\n\n\t\tPRESTAMOS DEL OBJETO " + objeto.getIdObjeto();
+                    //System.out.println("\n\t\tPRESTAMOS DEL OBJETO " + objeto.getIdObjeto());
                     flag_o = true;
                     while(it_p.hasNext()){
                         prestamo = it_p.next();
@@ -214,25 +257,40 @@ public class SistemaPrestamoObjeto {
                             flag_p = true;
                             if(opcion == 6)
                                 importe += prestamo.getStartup();
-                            System.out.println(prestamo.toString());
+                           
+                          //  System.out.println(prestamo.toString());
+                            text += prestamo.toString();
+                            text4 += prestamo.toString();
                         }  
                     }
-                    if(!flag_p)
-                        System.out.println("\n\t\tEl objeto " + objeto.getIdObjeto()+ " no tiene prestamos asociados.");
+                    if(!flag_p){
+                        text += "\n\n\t\tEl objeto " + objeto.getIdObjeto()+ " no tiene prestamos asociados.";
+                        text4 += "\n\n\t\tEl objeto " + objeto.getIdObjeto()+ " no tiene prestamos asociados.";
+                        //System.out.println("\n\t\tEl objeto " + objeto.getIdObjeto()+ " no tiene prestamos asociados.");
+                    }
                     it_p = list_p.iterator();
                 }
             }
             
-            if(!flag_o && (flag_op6 || (opcion == 4)))
-                System.out.println("\n\tEl propietario " + usuario.getIdUsuario()+ " no tiene objetos asociados.");
+            if(!flag_o && (flag_op6 || (opcion == 4))){
+                text += "\n\n\tEl propietario " + usuario.getIdUsuario()+ " no tiene objetos asociados.";
+                text4 += "\n\n\tEl propietario " + usuario.getIdUsuario()+ " no tiene objetos asociados.";
+                //System.out.println("\n\tEl propietario " + usuario.getIdUsuario()+ " no tiene objetos asociados.");
+            }
             
             if(flag_op6 && opcion == 6){
-                System.out.println("\nImporte total acumulado para la startup: " + importe + " euros");
+                text += "\n\nImporte total acumulado para la startup: " + importe + " euros";
+               // System.out.println("\nImporte total acumulado para la startup: " + importe + " euros");
                 importe = 0;
             }
                 
             it_o = list_o.iterator();
         }  
+        
+        if(opcion == 4)
+            return text4;
+        else
+            return text;
     }
    
     public static String getNombreOCorreo(String preg, String formato)

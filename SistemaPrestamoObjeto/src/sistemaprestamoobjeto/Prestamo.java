@@ -111,7 +111,7 @@ public class Prestamo {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
          String fecha_i = formato.format(fecha_inicio);
          String fecha_f = formato.format(fecha_final);
-        String s = ("\n\t\tNombre del cliente: "+nombre+
+        String s = ("\n\n\t\tNombre del cliente: "+nombre+
                 "\n\t\tFecha del prestamo " +
                 fecha_i + " - " + fecha_f + "\n\t\tImporte para el propiedario: "+
                 importe + " euros\n\t\tImporte para la startup: "+startup+ " euros");
