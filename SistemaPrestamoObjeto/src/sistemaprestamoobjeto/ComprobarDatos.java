@@ -6,6 +6,7 @@
 
 package sistemaprestamoobjeto;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
@@ -35,6 +36,34 @@ public class ComprobarDatos {
         return opcion;
     }
     
+    public static float excepcionInputFloat(){
+        
+        Scanner leer = new Scanner(System.in);
+        float res = -1;
+        
+        try{
+            res = leer.nextFloat();
+        }catch(InputMismatchException e){
+            System.out.println("Excepcion: " + e);
+        }
+        
+        return res;
+    }
+    
+    public static Date excepcionInputDate(){
+        String fecha;
+        Scanner leer = new Scanner(System.in);
+        fecha = leer.nextLine();
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = null;
+        try {
+            date = formato.parse(fecha);
+        } catch (ParseException ex) {
+            System.out.println("Exception: " + ex);
+        }
+       
+       return date;
+    }
     
     public static boolean comprobarFormato(String nombre, String formato){
     //debe tener por minimo una letra

@@ -106,6 +106,7 @@ public class Prestamo {
     /**
      * Imprime prestamo en pantalla
      */
+    @Override
     public String toString(){    
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
          String fecha_i = formato.format(fecha_inicio);

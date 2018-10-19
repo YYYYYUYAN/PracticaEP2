@@ -5,8 +5,6 @@
  */
 package sistemaprestamoobjeto;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -203,18 +201,20 @@ public class SistemaPrestamoObjeto {
     public static String getNombreOCorreo(String preg, String formato)
     {
         Scanner leer = new Scanner(System.in);
-        String res = "";
+        String res;
         int i = 0;
-        boolean flag = false;
         do{
             System.out.println(preg);
             res = leer.nextLine();
             if(!ComprobarDatos.comprobarFormato(res, formato))
+            {
                 System.out.println("Formato incorrecto ");  
+                res = "";
+            }
             else
-                flag = true;
+                i = MAX_INTENTO;
            i++;
-        }while(!flag && i < MAX_INTENTO);
+        }while(i < MAX_INTENTO);
         
         return res;    
     }
@@ -240,7 +240,44 @@ public class SistemaPrestamoObjeto {
     }
     
     
+    public static Date getDateTeclado(String preg, Date f)
+    {
+        Date fecha;
+        int i = 0;
+        do{
+            System.out.println(preg);
+            fecha = ComprobarDatos.excepcionInputDate();
+            if(fecha != null){
+                if(ComprobarDatos.comprobarFecha(f, fecha))
+                    i = MAX_INTENTO;
+                else
+                {
+                    System.out.println("El rango de fecha no es valido");
+                    fecha = null;
+                }
+            }
+            i++;
+        }while(i < MAX_INTENTO);
+        
+        return fecha;
+    }
    
+    public static float getCosteTeclado(String preg){
+        float res;
+        int i = 0;
+        do{
+            System.out.println(preg);
+            res = ComprobarDatos.excepcionInputFloat();
+            if(res < 0)
+                System.out.println("El numero introducido debe ser mayor o igual que 0");
+            else
+                 i = MAX_INTENTO;
+            i++;
+        }while(i < MAX_INTENTO);
+        
+        return res;
+    }
+    
     /**
      * Crea un objeto para un usuario ya está creado
      * @param list_o lista de objetos
@@ -248,11 +285,10 @@ public class SistemaPrestamoObjeto {
      * @return objeto
      */
     public static boolean altaObjeto(ArrayList<Objeto> list_o, ArrayList<Usuario> list_u){
-        String descripcion, fecha_inicio, fecha_final;
+        String descripcion;
         int id_propiedario;
         Scanner leer = new Scanner(System.in);
         int pos;
-        float coste = 0;
         
         printListaUsuarios(list_u);
         System.out.println("Elige el numero de usuario: ");
@@ -262,63 +298,29 @@ public class SistemaPrestamoObjeto {
             System.out.println("Introduce la descripcion del objeto: ");
             descripcion = leer.nextLine();
             
-            System.out.println("Introduce la fecha de inicio del disponibilidad del objeto (dd/mm/aaaa): ");
-            fecha_inicio = leer.nextLine();
-            System.out.println("Introduce la fecha de fin del disponibilidad del objeto (dd/mm/aaaa):  ");
-            fecha_final = leer.nextLine();
-            System.out.println("Introduce el coste del objeto: ");
-            String cost = leer.nextLine();
-            try{
-                    try{
-                    coste = Float.parseFloat(cost);
-                    }catch (NumberFormatException n){
-                        System.out.println("Excepcion: " + n);
-                    }
-                    Date f_i = toDate(fecha_inicio);
-                    Date f_f = toDate(fecha_final);
-                    Date actual = new Date();
-                    if(((coste > 0 && f_f.after(f_i)) && (f_i.after(actual)||isSameDay(fecha_inicio, actual)))){
-                        Objeto o = new Objeto(descripcion, f_i, f_f, coste, id_propiedario);
-                        list_o.add(o);
-                        return true;
-                    }
-                    System.out.println("Fecha de inicio debe ser igual o mayor que día actual del sistema "
-                            + "\ny fecha final debe mayor que fecha de inicio");
-                }catch(ParseException e ){
-                    System.out.println("Excepcion: " + e);
-                }
+            String s1 = "Introduce la fecha de inicio del disponibilidad del objeto (dd/mm/aaaa): ";
+            Date actual = new Date();
+            Date fecha_inicio = getDateTeclado(s1, actual);
+            if(fecha_inicio == null)
+                return false;
+            String s2 = "Introduce la fecha de fin del disponibilidad del objeto (dd/mm/aaaa):  ";
+            Date fecha_final = getDateTeclado(s2, fecha_inicio);
+            if(fecha_final == null)
+                return false;
+            String s3 = "Introduce el coste del objeto: ";
+            float coste = getCosteTeclado(s3);
+            Objeto o = new Objeto(descripcion, fecha_inicio, fecha_final, coste, id_propiedario);
+            list_o.add(o);
+                return true;
         }
         else    
             System.out.println("No existe el usuario con este id.");
         
         return false;
     }
+   
     
     
-    /**
-     * Comprobar dos fechas si son misma dia 
-     * @param f1 fecha de tipo string
-     * @param f2 fecha de tipo Date
-     * @return true o false
-     */
-    public static boolean isSameDay(String f1, Date f2){
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        String fecha = formato.format(f2);
-        return fecha.equals(f1);
-    }
-    
-    
-    /**
-     * Tranformar fecha de tipo String a Date
-     * @param fecha fecha de tipo String
-     * @return fecha de tipo Date
-     * @throws ParseException 
-     */
-    public static Date toDate(String fecha) throws ParseException{
-            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-            Date date = formato.parse(fecha);
-        return date;
-    }
     
     
     /**
@@ -330,47 +332,38 @@ public class SistemaPrestamoObjeto {
      */
     public static boolean alquilarObjeto(ArrayList<Prestamo> list_p, ArrayList<Usuario> list_u, ArrayList<Objeto> list_o){
        
-        String fecha_inicio, fecha_final, nombre;
+
         Scanner leer = new Scanner(System.in);
         printListaUsuarios(list_u);
         int pos_u, pos_o;
         
         System.out.println("Elige el numero de usuario: ");
-        int id_u = excepcionInput();
+        int id_u = ComprobarDatos.excepcionInput();
         pos_u = buscarUsuario(list_u, id_u);
         if(pos_u!= -1){
-            nombre = list_u.get(pos_u).getNombre();
+            String nombre = list_u.get(pos_u).getNombre();
             if(printListaObjetosDisponible(list_o)){
                 System.out.println("Elige el numero de objeto: ");
-                int id_o = excepcionInput();
+                int id_o = ComprobarDatos.excepcionInput();
                 pos_o = buscarObjeto(list_o, id_o);
                 if(pos_o != -1){
-                    System.out.println("Introduce la fecha de inicio del alquiler del objeto (dd/mm/aaaa): ");
-                    fecha_inicio = leer.nextLine();
-                    System.out.println("Introduce la fecha de fin del alquiler del objeto (dd/mm/aaaa):  ");
-                    fecha_final = leer.nextLine();
-                    try{
-                        Date f_i = toDate(fecha_inicio);
-                        Date f_f = toDate(fecha_final);
-                        Objeto objeto = list_o.get(pos_o);
-                        Date fin = objeto.getFechaFinal();
-                        Date inicio = objeto.getFechaInicio();
-                        if((isSameDay(fecha_inicio, inicio)||(f_i.after(inicio)))){
-                            if((isSameDay(fecha_final,fin)|| f_f.before(fin))){
-                                if(f_f.after(f_i)){
-                                    int dia = (int) ((f_f.getTime() - f_i.getTime()) / (24 * 60 * 60 * 1000)) + 1;
-                                    float importe = dia * list_o.get(pos_o).getCoste();
-                                    Prestamo p = new Prestamo(f_i, f_f, importe, nombre, id_o);
-                                    list_p.add(p);
-                                    pos_u = buscarUsuario(list_u, objeto.getIdPropiedario());
-                                    list_u.get(pos_u).setPrestamo(true);
-                                    return true;
-                                }
-                            }
-                        }
-                        System.out.println("El objeto no esta disponible en esta fecha");
-                    }catch(ParseException e){
-                        System.out.println("Excepcion: "+ e);
+                    Objeto objeto = list_o.get(pos_o);
+                    String s1 = "Introduce la fecha de inicio del alquiler del objeto (dd/mm/aaaa): ";
+                    Date inicio = objeto.getFechaInicio();
+                    Date fecha_inicio = getDateTeclado(s1, inicio);
+                    if(fecha_inicio == null)
+                        return false;
+                    String s2 = "Introduce la fecha de fin del alquiler del objeto (dd/mm/aaaa):  ";
+                    Date fin = objeto.getFechaFinal();
+                    Date fecha_final = getDateTeclado(s2, fin);
+                    if(fecha_final.after(fecha_inicio)){
+                        int dia = (int) ((fecha_inicio.getTime() - fecha_final.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+                        float importe = dia * list_o.get(pos_o).getCoste();
+                        Prestamo p = new Prestamo(fecha_inicio, fecha_final, importe, nombre, id_o);
+                        list_p.add(p);
+                        pos_u = buscarUsuario(list_u, objeto.getIdPropiedario());
+                        list_u.get(pos_u).setPrestamo(true);
+                        return true;
                     }
                 }
                 else
@@ -381,7 +374,6 @@ public class SistemaPrestamoObjeto {
         }
         else
             System.out.println("No existe el usuario con este id.");
-        
         return false;
     }
     

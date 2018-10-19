@@ -18,12 +18,11 @@ public class Usuario {
 
     /**
      * Constructor de usuario
-     * @param id
      * @param nombre
      * @param email 
      */
     public Usuario (String nombre, String email){
-        this.id_usuario = id_usuario + 1;
+        id_usuario = id_usuario + 1;
         this.nombre = nombre;
         this.email = email;     
         this.prestamo = false;
@@ -32,6 +31,7 @@ public class Usuario {
     /**
      * Imprime el usuario
      */ 
+    @Override
     public String toString(){
         String s = ("\nPROPIETARIO " + id_usuario + 
                 "\nNombre del propietario: " + nombre + 
