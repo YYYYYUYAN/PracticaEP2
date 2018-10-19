@@ -20,6 +20,10 @@ public class SistemaPrestamoObjeto {
     static final Date FECHA_NO_VAL = new Date(1220227200L * 1000);
     //Formato de correo 
     static final int MAX_INTENTO = 3;
+    static final int MISMAFECHAMENOR = 0;
+    static final int  NOMISMAFECHAMENOR = 1;
+    static final int MISMAFECHAMAYOR = 2;
+    
     static final String NOMBRE = "^[a-zA-Z]([a-zA-z|\\s])*$";
     static final String CORREO = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
     /**
@@ -240,7 +244,7 @@ public class SistemaPrestamoObjeto {
     }
     
     
-    public static Date getDateTeclado(String preg, Date f)
+    public static Date getDateTeclado(String preg, Date f, int tipo )
     {
         Date fecha;
         int i = 0;
@@ -248,13 +252,23 @@ public class SistemaPrestamoObjeto {
             System.out.println(preg);
             fecha = ComprobarDatos.excepcionInputDate();
             if(fecha != null){
-                if(ComprobarDatos.comprobarFecha(f, fecha))
-                    i = MAX_INTENTO;
-                else
-                {
-                    System.out.println("El rango de fecha no es valido");
-                    fecha = null;
+                if(tipo == MISMAFECHAMAYOR){
+                    if(ComprobarDatos.comprobarFecha(fecha,f, tipo))
+                        i = MAX_INTENTO;
+                    else
+                    {
+                        System.out.println("El rango de fecha no es valido");
+                        fecha = null;
+                    }
                 }
+                else
+                    if(ComprobarDatos.comprobarFecha(f, fecha, tipo))
+                        i = MAX_INTENTO;
+                    else
+                    {
+                        System.out.println("El rango de fecha no es valido");
+                        fecha = null;
+                    }
             }
             i++;
         }while(i < MAX_INTENTO);
@@ -300,15 +314,17 @@ public class SistemaPrestamoObjeto {
             
             String s1 = "Introduce la fecha de inicio del disponibilidad del objeto (dd/mm/aaaa): ";
             Date actual = new Date();
-            Date fecha_inicio = getDateTeclado(s1, actual);
+            Date fecha_inicio = getDateTeclado(s1, actual, MISMAFECHAMENOR);
             if(fecha_inicio == null)
                 return false;
             String s2 = "Introduce la fecha de fin del disponibilidad del objeto (dd/mm/aaaa):  ";
-            Date fecha_final = getDateTeclado(s2, fecha_inicio);
+            Date fecha_final = getDateTeclado(s2, fecha_inicio, NOMISMAFECHAMENOR);
             if(fecha_final == null)
                 return false;
             String s3 = "Introduce el coste del objeto: ";
             float coste = getCosteTeclado(s3);
+            if(coste < 0)
+                return false;
             Objeto o = new Objeto(descripcion, fecha_inicio, fecha_final, coste, id_propiedario);
             list_o.add(o);
                 return true;
@@ -350,14 +366,16 @@ public class SistemaPrestamoObjeto {
                     Objeto objeto = list_o.get(pos_o);
                     String s1 = "Introduce la fecha de inicio del alquiler del objeto (dd/mm/aaaa): ";
                     Date inicio = objeto.getFechaInicio();
-                    Date fecha_inicio = getDateTeclado(s1, inicio);
+                    Date fecha_inicio = getDateTeclado(s1, inicio, MISMAFECHAMENOR);
                     if(fecha_inicio == null)
                         return false;
                     String s2 = "Introduce la fecha de fin del alquiler del objeto (dd/mm/aaaa):  ";
                     Date fin = objeto.getFechaFinal();
-                    Date fecha_final = getDateTeclado(s2, fin);
+                    Date fecha_final = getDateTeclado(s2, fin, MISMAFECHAMAYOR);
+                    if(fecha_final == null)
+                        return false;
                     if(fecha_final.after(fecha_inicio)){
-                        int dia = (int) ((fecha_inicio.getTime() - fecha_final.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+                        int dia = (int) ((fecha_final.getTime() - fecha_inicio.getTime()) / (24 * 60 * 60 * 1000)) + 1;
                         float importe = dia * list_o.get(pos_o).getCoste();
                         Prestamo p = new Prestamo(fecha_inicio, fecha_final, importe, nombre, id_o);
                         list_p.add(p);
@@ -365,6 +383,8 @@ public class SistemaPrestamoObjeto {
                         list_u.get(pos_u).setPrestamo(true);
                         return true;
                     }
+                    else
+                        System.out.println("Fecha final debe ser mayor que fecha inicio");
                 }
                 else
                     System.out.println("No existe el objeto con este id." );

@@ -74,9 +74,12 @@ public class ComprobarDatos {
         return m.matches();
     }
     
-    public static boolean comprobarFecha(Date f1, Date f2){
-
-        return (isSameDay(f1, f2) || f2.after(f1));
+    public static boolean comprobarFecha(Date f1, Date f2, int tipo){
+        
+        if(tipo == 1)
+            return f2.after(f1);
+        else
+            return (isSameDay(f1, f2) || f2.after(f1));
     }
     
 

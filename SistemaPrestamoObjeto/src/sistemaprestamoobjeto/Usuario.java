@@ -12,7 +12,8 @@ package sistemaprestamoobjeto;
  */
 public class Usuario {
     private String nombre;
-    private static int id_usuario;
+    private static int id_usuario_proxi;
+    private final int id_usuario;
     private String email;
     private boolean prestamo;
 
@@ -22,7 +23,8 @@ public class Usuario {
      * @param email 
      */
     public Usuario (String nombre, String email){
-        id_usuario = id_usuario + 1;
+        id_usuario = id_usuario_proxi;
+        id_usuario_proxi = id_usuario_proxi + 1;
         this.nombre = nombre;
         this.email = email;     
         this.prestamo = false;
@@ -30,10 +32,11 @@ public class Usuario {
      
     /**
      * Imprime el usuario
+     * @return 
      */ 
     @Override
     public String toString(){
-        String s = ("\nPROPIETARIO " + id_usuario + 
+        String s = ("\nPROPIETARIO " + getIdUsuario() + 
                 "\nNombre del propietario: " + nombre + 
                 " \nCorreo Electronico: " + email);
         return s;

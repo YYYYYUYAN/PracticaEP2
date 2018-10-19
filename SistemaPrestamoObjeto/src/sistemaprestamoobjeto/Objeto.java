@@ -13,7 +13,8 @@ import java.util.Date;
  * @author YUYAN
  */
 public class Objeto {
-    private static int id_objeto;
+    private static int id_objeto_prox;
+    private final int id_objeto;
     private final int id_propiedario;
     private String descripcion;
     private Date fecha_inicio;
@@ -33,7 +34,8 @@ public class Objeto {
         this.fecha_inicio = fecha_inicio;
         this.fecha_final = fecha_final;
         this.coste = coste;
-        id_objeto = id_objeto + 1;   
+        id_objeto = id_objeto_prox;
+        id_objeto_prox += 1;
         this.id_propiedario = id_propiedario;
     }
     
