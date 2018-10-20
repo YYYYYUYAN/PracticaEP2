@@ -385,7 +385,7 @@ public class SistemaPrestamoObjeto {
                             //  System.out.println(prestamo.toString());
                             text += prestamo.toString();
                             text4 += prestamo.toString();
-                            importe += prestamo.getStartup();
+                            up += prestamo.getStartup();
                         }   
                     }
                     if (!flag_p) {
@@ -404,7 +404,7 @@ public class SistemaPrestamoObjeto {
             }
 
             if (importe > 0 && opcion == 6) {
-                text += "\n\nImporte total acumulado para la startup: " + importe + " euros";
+                text += "\n\nImporte total acumulado para la startup: " + up + " euros";
                 // System.out.println("\nImporte total acumulado para la startup: " + importe + " euros");
             }
 
