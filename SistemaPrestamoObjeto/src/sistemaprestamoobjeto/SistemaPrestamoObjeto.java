@@ -347,6 +347,7 @@ public class SistemaPrestamoObjeto {
         Objeto objeto;
         Prestamo prestamo;
         float importe;
+        float up = 0;
         String text = "";
         String text4 = "";
         for (int i = 0; i < list_u.size(); i++) {
@@ -384,7 +385,8 @@ public class SistemaPrestamoObjeto {
                             //  System.out.println(prestamo.toString());
                             text += prestamo.toString();
                             text4 += prestamo.toString();
-                        }
+                            importe += prestamo.getStartup();
+                        }   
                     }
                     if (!flag_p) {
                         text += "\n\n\t\tEl objeto " + objeto.getIdObjeto() + " no tiene prestamos asociados.";
@@ -402,7 +404,7 @@ public class SistemaPrestamoObjeto {
             }
 
             if (importe > 0 && opcion == 6) {
-                text += "\n\nImporte total acumulado para la startup: " + list_u.get(i).getPrestamo() + " euros";
+                text += "\n\nImporte total acumulado para la startup: " + importe + " euros";
                 // System.out.println("\nImporte total acumulado para la startup: " + importe + " euros");
             }
 
