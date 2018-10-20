@@ -141,10 +141,12 @@ public class SistemaPrestamoObjeto {
             }
         }
     }
-/**
- * Funcion para listar los usuarios que mas lleven acomulado
- * @param list_u 
- */
+
+    /**
+     * Funcion para listar los usuarios que mas lleven acomulado
+     *
+     * @param list_u
+     */
     public static void listarUsuariosAsiduos(ArrayList<Usuario> list_u) {
         ArrayList<Usuario> list = new ArrayList<>();
         list.addAll(list_u);
@@ -156,11 +158,13 @@ public class SistemaPrestamoObjeto {
             i++;
         }
     }
-/**
- * Funcion de Modificar el importe
- * @param list_objeto
- * @return 
- */
+
+    /**
+     * Funcion de Modificar el importe
+     *
+     * @param list_objeto
+     * @return
+     */
     public static boolean modificarImporte(ArrayList<Objeto> list_objeto) {
         int opcion, pos;
         if (!list_objeto.isEmpty()) {
@@ -186,9 +190,10 @@ public class SistemaPrestamoObjeto {
 
         return false;
     }
-/**
- * Funcion del menu
- */
+
+    /**
+     * Funcion del menu
+     */
     public static void printMenu() {
         System.out.println(" ---------\nMenu");
         System.out.println(" 1- Alta Usuario ");
@@ -204,14 +209,15 @@ public class SistemaPrestamoObjeto {
         System.out.println(" 7- Salir \n---------");
         System.out.println(" \nIntroduce la opcion: ");
     }
+
     /**
      * Funcion para eliminar un usuario de la lista
+     *
      * @param list_u
      * @param list_o
      * @param list_p
-     * @return 
+     * @return
      */
-
     public static boolean eliminarUsuario(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p) {
         int id_propiedario;
         int pos, id_ob;
@@ -226,37 +232,41 @@ public class SistemaPrestamoObjeto {
             pos = buscarUsuario(list_u, id_propiedario);
             if (pos != -1) {
                 int id_u = list_u.get(pos).getIdUsuario();
-                if (list_u.get(pos).getPrestamo() > 0) {
-                    for (i = 0; i < list_o.size(); i++) {
-                        if (list_o.get(i).getIdPropiedario() == id_u) {
-                            id_ob = list_o.get(i).getIdObjeto();
-                            ids.add(id_ob);
-
-                            for (j = 0; j < list_p.size(); j++) {
-                                if (list_p.get(j).getIdObjeto() == id_ob) {
-                                    ps.add(list_p.get(j));
-                                }
-                            }
-                        }
-                    }
-
-                    for (i = 0; i < ps.size(); i++) {
-                        list_p.remove(ps.get(i));
-                    }
-                } else {
-                    for (i = 0; i < list_o.size(); i++) {
-                        if (list_o.get(i).getIdPropiedario() == id_u) {
-                            id_ob = list_o.get(i).getIdObjeto();
-                            ids.add(id_ob);
-                        }
+                for (i = 0; i < list_o.size(); i++) {
+                    if (list_o.get(i).getIdPropiedario() == id_u) {
+                        id_ob = list_o.get(i).getIdObjeto();
+                        ids.add(id_ob);
                     }
                 }
 
                 for (i = 0; i < ids.size(); i++) {
+                    for (j = 0; j < list_p.size(); j++) {
+                        if (list_p.get(j).getIdObjeto() == ids.get(i)) {
+                            ps.add(list_p.get(j));
+                        }
+                    }
                     bajaObjetoAux(list_o, ids.get(i));
                 }
-
                 list_u.remove(pos);
+
+                for (i = 0; i < list_p.size(); i++) {
+                    if (list_p.get(i).getIdUsuario() == id_propiedario) {
+                        pos = list_p.get(i).getIdObjeto();
+                        pos = buscarObjeto(list_o, pos);
+                        if (pos != -1) {
+                            pos = buscarUsuario(list_u, list_o.get(pos).getIdPropiedario());
+                            if (pos != -1) {
+                                list_u.get(i).setPrestamo(-list_p.get(i).getImporte());
+                            }
+                        }
+
+                        ps.add(list_p.get(i));
+                    }
+                }
+                for (i = 0; i < ps.size(); i++) {
+                    list_p.remove(ps.get(i));
+                }
+
                 ps.clear();
                 ids.clear();
                 return true;
@@ -265,17 +275,20 @@ public class SistemaPrestamoObjeto {
             }
         } else {
             System.out.println("Lista de usuario es vacio");
-        }
 
+        }
         return false;
+
     }
-/**
- * Funcion para generar el fichero donde guarde los prestamos
- * @param list_u
- * @param list_o
- * @param list_p
- * @return 
- */
+
+    /**
+     * Funcion para generar el fichero donde guarde los prestamos
+     *
+     * @param list_u
+     * @param list_o
+     * @param list_p
+     * @return
+     */
     public static boolean generarFicheroPrestamo(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p) {
         String s = listarObjetos(list_u, list_o, list_p, 6);
         return generarFichero(s);
@@ -283,8 +296,9 @@ public class SistemaPrestamoObjeto {
 
     /**
      * Funcion que se usa pra generar un fichero donde guarde los saldos
+     *
      * @param s
-     * @return 
+     * @return
      */
     public static boolean generarFichero(String s) {
         try {
@@ -315,13 +329,14 @@ public class SistemaPrestamoObjeto {
         }
         return false;
     }
+
     /**
      * Funcion para dar de baja de un objeto
+     *
      * @param list_objeto
      * @param opcion
-     * @return 
+     * @return
      */
-
     public static boolean bajaObjetoAux(ArrayList<Objeto> list_objeto, int opcion) {
         int pos = buscarObjeto(list_objeto, opcion);
         if (pos != -1) {
@@ -387,7 +402,7 @@ public class SistemaPrestamoObjeto {
                             text += prestamo.toString();
                             text4 += prestamo.toString();
                             up += prestamo.getStartup();
-                        }   
+                        }
                     }
                     if (!flag_p) {
                         text += "\n\n\t\tEl objeto " + objeto.getIdObjeto() + " no tiene prestamos asociados.";
@@ -406,6 +421,7 @@ public class SistemaPrestamoObjeto {
 
             if (importe > 0 && opcion == 6) {
                 text += "\n\nImporte total acumulado para la startup: " + up + " euros";
+                up = 0;
                 // System.out.println("\nImporte total acumulado para la startup: " + importe + " euros");
             }
 
@@ -418,13 +434,14 @@ public class SistemaPrestamoObjeto {
             return text;
         }
     }
+
     /**
-     *  Funcion para que compruebe el formato del correo
+     * Funcion para que compruebe el formato del correo
+     *
      * @param preg
      * @param formato
-     * @return 
+     * @return
      */
-
     public static String getNombreOCorreo(String preg, String formato) {
         Scanner leer = new Scanner(System.in);
         String res;
@@ -485,14 +502,15 @@ public class SistemaPrestamoObjeto {
         list_u.add(u);
         return true;
     }
+
     /**
      * Comprueba los rangos de las fechas
+     *
      * @param preg
      * @param f
      * @param tipo
-     * @return 
+     * @return
      */
-
     public static Date getDateTeclado(String preg, Date f, int tipo) {
         Date fecha;
         int i = 0;
@@ -522,8 +540,9 @@ public class SistemaPrestamoObjeto {
 
     /**
      * Comprueba el importe que le introduces para cambiar el precio del objeto
+     *
      * @param preg
-     * @return 
+     * @return
      */
     public static float getCosteTeclado(String preg) {
         float res;
@@ -601,7 +620,6 @@ public class SistemaPrestamoObjeto {
 
         System.out.println(list_u.toString());
         int pos_u, pos_o;
-
         System.out.println("Elige el numero de usuario: ");
         int id_u = ComprobarDatos.excepcionInput();
         pos_u = buscarUsuario(list_u, id_u);
@@ -630,6 +648,7 @@ public class SistemaPrestamoObjeto {
                         int dia = (int) ((fecha_final.getTime() - fecha_inicio.getTime()) / (24 * 60 * 60 * 1000)) + 1;
                         float importe = dia * list_o.get(pos_o).getCoste();
                         Prestamo p = new Prestamo(fecha_inicio, fecha_final, importe, nombre, id_o);
+                        p.setIdUsuario(id_u);
                         list_p.add(p);
                         pos_u = buscarUsuario(list_u, objeto.getIdPropiedario());
                         list_u.get(pos_u).setPrestamo(importe);

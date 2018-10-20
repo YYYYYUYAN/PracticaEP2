@@ -20,7 +20,7 @@ public class Prestamo {
     private float importe;
     private float startup;
     private String nombre;
-    
+    private int id_usuario;
     /**
      * Constructor
      * @param fecha_inicio
@@ -38,7 +38,22 @@ public class Prestamo {
         this.nombre = nombre;
         this.id_objeto = id_objeto;
     }
+    /**
+     * Poner id de usuario 
+     * @param id 
+     */
+    public void setIdUsuario(int id){
+        id_usuario = id;
+    }
     
+    /**
+     * Devuelve id de usuario
+     * @param id
+     * @return 
+     */
+    public int getIdUsuario(){
+        return id_usuario;
+    }
     /**
      * Devuelve id de objeto
      * @return 
