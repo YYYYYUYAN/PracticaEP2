@@ -9,7 +9,8 @@ import java.util.Comparator;
 
 /**
  *
- * @author YUYAN
+ * @author YUYAN Wu
+ * @author Younes Narjis
  */
 public class SortArrayList implements Comparator<Usuario>{
     @Override

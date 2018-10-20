@@ -17,7 +17,8 @@ import java.util.Scanner;
 
 /**
  *
- * @author YUYAN
+ * @author YUYAN Wu
+ * @author Younes Narjis
  */
 public class SistemaPrestamoObjeto {
 
