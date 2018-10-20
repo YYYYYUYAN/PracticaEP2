@@ -114,7 +114,7 @@ public class Prestamo {
          String fecha_f = formato.format(fecha_final);
         String s = ("\n\n\t\tNombre del cliente: "+nombre+
                 "\n\t\tFecha del prestamo " +
-                fecha_i + " - " + fecha_f + "\n\t\tImporte para el propiedario: "+
+                fecha_i + " - " + fecha_f + "\n\t\tImporte para el propietario: "+
                 importe + " euros\n\t\tImporte para la startup: "+startup+ " euros");
         return s;
     }

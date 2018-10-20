@@ -129,4 +129,8 @@ public class Usuario {
     public String getEmail (){
         return email;
     }
+
+    String getStartup() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

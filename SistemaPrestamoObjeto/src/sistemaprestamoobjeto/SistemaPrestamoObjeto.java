@@ -140,7 +140,10 @@ public class SistemaPrestamoObjeto {
             }
         }
     }
-
+/**
+ * Funcion para listar los usuarios que mas lleven acomulado
+ * @param list_u 
+ */
     public static void listarUsuariosAsiduos(ArrayList<Usuario> list_u) {
         ArrayList<Usuario> list = new ArrayList<>();
         list.addAll(list_u);
@@ -148,11 +151,15 @@ public class SistemaPrestamoObjeto {
         int i = 0;
         while (i < list.size() && list.get(i).getPrestamo() > 0) {
             System.out.println(list.get(i).toString());
-            System.out.println("Importe total acumulado para la startup: " + list.get(i).getPrestamo() + " euros");
+            System.out.println("Importe total acomulado para la startup: " + list.get(i).getPrestamo() + " euros");
             i++;
         }
     }
-
+/**
+ * Funcion de Modificar el importe
+ * @param list_objeto
+ * @return 
+ */
     public static boolean modificarImporte(ArrayList<Objeto> list_objeto) {
         int opcion, pos;
         if (!list_objeto.isEmpty()) {
@@ -178,7 +185,9 @@ public class SistemaPrestamoObjeto {
 
         return false;
     }
-
+/**
+ * Funcion del menu
+ */
     public static void printMenu() {
         System.out.println(" ---------\nMenu");
         System.out.println(" 1- Alta Usuario ");
@@ -194,6 +203,13 @@ public class SistemaPrestamoObjeto {
         System.out.println(" 7- Salir \n---------");
         System.out.println(" \nIntroduce la opcion: ");
     }
+    /**
+     * Funcion para eliminar un usuario de la lista
+     * @param list_u
+     * @param list_o
+     * @param list_p
+     * @return 
+     */
 
     public static boolean eliminarUsuario(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p) {
         int id_propiedario;
@@ -252,12 +268,23 @@ public class SistemaPrestamoObjeto {
 
         return false;
     }
-
+/**
+ * Funcion para generar el fichero donde guarde los prestamos
+ * @param list_u
+ * @param list_o
+ * @param list_p
+ * @return 
+ */
     public static boolean generarFicheroPrestamo(ArrayList<Usuario> list_u, ArrayList<Objeto> list_o, ArrayList<Prestamo> list_p) {
         String s = listarObjetos(list_u, list_o, list_p, 6);
         return generarFichero(s);
     }
 
+    /**
+     * Funcion que se usa pra generar un fichero donde guarde los saldos
+     * @param s
+     * @return 
+     */
     public static boolean generarFichero(String s) {
         try {
             try (BufferedWriter salida = new BufferedWriter(new FileWriter(new File("src/saldo.txt")))) {
@@ -287,6 +314,12 @@ public class SistemaPrestamoObjeto {
         }
         return false;
     }
+    /**
+     * Funcion para dar de baja de un objeto
+     * @param list_objeto
+     * @param opcion
+     * @return 
+     */
 
     public static boolean bajaObjetoAux(ArrayList<Objeto> list_objeto, int opcion) {
         int pos = buscarObjeto(list_objeto, opcion);
@@ -382,6 +415,12 @@ public class SistemaPrestamoObjeto {
             return text;
         }
     }
+    /**
+     *  Funcion para que compruebe el formato del correo
+     * @param preg
+     * @param formato
+     * @return 
+     */
 
     public static String getNombreOCorreo(String preg, String formato) {
         Scanner leer = new Scanner(System.in);
@@ -443,6 +482,13 @@ public class SistemaPrestamoObjeto {
         list_u.add(u);
         return true;
     }
+    /**
+     * Comprueba los rangos de las fechas
+     * @param preg
+     * @param f
+     * @param tipo
+     * @return 
+     */
 
     public static Date getDateTeclado(String preg, Date f, int tipo) {
         Date fecha;
@@ -471,6 +517,11 @@ public class SistemaPrestamoObjeto {
         return fecha;
     }
 
+    /**
+     * Comprueba el importe que le introduces para cambiar el precio del objeto
+     * @param preg
+     * @return 
+     */
     public static float getCosteTeclado(String preg) {
         float res;
         int i = 0;
