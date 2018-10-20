@@ -8,7 +8,6 @@ package sistemaprestamoobjeto;
 
 /**
  * Clase de usuario
- * @author younes
  */
 public class Usuario {
     private String nombre;

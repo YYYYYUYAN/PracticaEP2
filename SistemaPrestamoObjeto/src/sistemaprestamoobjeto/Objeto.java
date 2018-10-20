@@ -10,7 +10,6 @@ import java.util.Date;
 
 /**
  * Clase para guardar informacion de un objeto
- * @author YUYAN
  */
 public class Objeto {
     private static int id_objeto_prox;
