@@ -105,6 +105,7 @@ public class Prestamo {
     
     /**
      * Imprime prestamo en pantalla
+     * @return 
      */
     @Override
     public String toString(){    

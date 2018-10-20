@@ -15,7 +15,10 @@ public class Usuario {
     private static int id_usuario_proxi;
     private final int id_usuario;
     private String email;
-    private boolean prestamo;
+    private float prestamo;
+    private String direccion;
+    private String poblacion;
+    private String provincia;
 
     /**
      * Constructor de usuario
@@ -27,9 +30,32 @@ public class Usuario {
         id_usuario_proxi = id_usuario_proxi + 1;
         this.nombre = nombre;
         this.email = email;     
-        this.prestamo = false;
+        this.prestamo = 0;
     }
      
+    public void setProvincia(String p){
+        provincia = p;
+    }
+    
+    public void setDireccion(String d){
+        direccion = d;
+    }
+    
+    public void setPoblacion(String p){
+        poblacion = p;
+    }
+    
+    public String getProvincia(){
+        return provincia;
+    }
+    
+    public String getPoblacion(){
+        return poblacion;
+    }
+    
+    public String getDireccion(){
+        return direccion;
+    }
     /**
      * Imprime el usuario
      * @return 
@@ -38,7 +64,10 @@ public class Usuario {
     public String toString(){
         String s = ("\n\nPROPIETARIO " + getIdUsuario() + 
                 "\nNombre del propietario: " + nombre + 
-                " \nCorreo Electronico: " + email);
+                " \nCorreo Electronico: " + email +
+                " \nDireccion: " + direccion +
+                " \nPoblacion: " + poblacion + 
+                " \nProvincia: " + provincia);
         return s;
     }
     
@@ -47,15 +76,15 @@ public class Usuario {
      * Devuelve true si tiene prestamo, en caso contrario, devuelve false;
      * @param p true o false
      */
-    public void setPrestamo(boolean p){
-        this.prestamo = p;
+    public void setPrestamo(float p){
+        this.prestamo += p;
     }
-    
+   
     /**
      * Devuelve estado de prestamo
      * @return true o false
      */
-    public boolean getPrestamo()
+    public float getPrestamo()
     {
         return prestamo;
     }
