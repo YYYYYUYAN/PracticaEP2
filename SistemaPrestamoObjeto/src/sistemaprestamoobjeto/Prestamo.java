@@ -10,6 +10,8 @@ import java.util.Date;
 
 /**
  * Clase de prestamo
+ * @author YUYAN Wu
+ * @author Younes Narjis
  */
 public class Prestamo {
     private final int  id_objeto;

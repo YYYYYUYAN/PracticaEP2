@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 
 /**
  *
+ * @author Younes Narjis
+ * @author Yuyan Wu
  */
 public class ComprobarDatos {
     
@@ -34,6 +36,10 @@ public class ComprobarDatos {
         }
         return opcion;
     }
+    /**
+     * Comprueba si es un float
+     * @return 
+     */
     
     public static float excepcionInputFloat(){
         
@@ -48,6 +54,10 @@ public class ComprobarDatos {
         
         return res;
     }
+    /**
+     * Funcion para tratar la excepcion del formato de las fechas
+     * @return 
+     */
     public static Date excepcionInputDate(){
         String fecha;
         Scanner leer = new Scanner(System.in);
@@ -62,6 +72,12 @@ public class ComprobarDatos {
        
        return date;
     }
+    /**
+     * Comprueba el formato de la fecha
+     * @param nombre
+     * @param formato
+     * @return 
+     */
     public static boolean comprobarFormato(String nombre, String formato){
     //debe tener por minimo una letra
         Pattern p;
@@ -71,6 +87,13 @@ public class ComprobarDatos {
         return m.matches();
     }
     
+    /**
+     *  Funcion para comprobar la fecha
+     * @param f1
+     * @param f2
+     * @param tipo
+     * @return 
+     */
     public static boolean comprobarFecha(Date f1, Date f2, int tipo){
         
         if(tipo == 1)
@@ -79,6 +102,12 @@ public class ComprobarDatos {
             return (isSameDay(f1, f2) || f2.after(f1));
     }
     
+/**
+ * Comprueba si es el misma fecha
+ * @param f1
+ * @param f2
+ * @return 
+ */
     public static boolean isSameDay(Date f1, Date f2){
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         String fecha2 = formato.format(f2);
